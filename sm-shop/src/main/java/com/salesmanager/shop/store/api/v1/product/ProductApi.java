@@ -301,7 +301,6 @@ public class ProductApi {
 	 *                   <p>
 	 *                   /api/product/123
 	 */
-    /**
 	@RequestMapping(value = {"/product/{id}","/products/{id}"}, method = RequestMethod.GET)
 	@ApiOperation(httpMethod = "GET", value = "Get a product by id", notes = "For administration and shop purpose. Specifying ?merchant is required otherwise it falls back to DEFAULT")
 	@ApiResponses(value = {
@@ -321,7 +320,6 @@ public class ProductApi {
 
 		return product;
 	}
-	**/
 
 	/**
 	 * Price calculation

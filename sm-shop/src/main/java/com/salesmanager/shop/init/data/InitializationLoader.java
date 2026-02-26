@@ -40,8 +40,8 @@ public class InitializationLoader {
 	@Inject
 	private InitializationDatabase initializationDatabase;
 	
-	//@Inject
-	//private InitData initData;
+	@Inject
+	private InitData initData;
 	
 	@Inject
 	private SystemConfigurationService systemConfigurationService;
@@ -89,6 +89,13 @@ public class InitializationLoader {
 				  config.setDisplayAddToCartOnFeaturedItems(true);
 				  
 				  merchantConfigurationService.saveMerchantConfig(config, store);
+				  
+				  // Populate sample products
+				  if(initData != null) {
+				      LOGGER.info("Populating sample products...");
+				      initData.initInitialData();
+				      LOGGER.info("Sample products created successfully");
+				  }
 
 
 			}

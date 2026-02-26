@@ -20,6 +20,7 @@ import com.salesmanager.core.business.services.catalog.category.CategoryService;
 import com.salesmanager.core.business.services.catalog.pricing.PricingService;
 import com.salesmanager.core.business.services.catalog.product.ProductService;
 import com.salesmanager.core.business.services.catalog.product.attribute.ProductAttributeService;
+import com.salesmanager.core.business.services.catalog.product.badge.ProductBadgeService;
 import com.salesmanager.core.business.services.catalog.product.relationship.ProductRelationshipService;
 import com.salesmanager.core.model.catalog.product.Product;
 import com.salesmanager.core.model.catalog.product.ProductCriteria;
@@ -38,7 +39,7 @@ import com.salesmanager.shop.utils.ImageFilePath;
 import com.salesmanager.shop.utils.LocaleUtils;
 
 @Service("productFacade")
-@Profile({ "default", "cloud", "gcp", "aws", "mysql" , "local" })
+@Profile({ "default", "cloud", "gcp", "aws", "mysql" , "local", "h2" })
 public class ProductFacadeImpl implements ProductFacade {
 
 	@Inject
@@ -55,6 +56,9 @@ public class ProductFacadeImpl implements ProductFacade {
 
 	@Inject
 	private ProductRelationshipService productRelationshipService;
+
+	@Inject
+	private ProductBadgeService productBadgeService;
 
 
 	@Inject
@@ -86,6 +90,7 @@ public class ProductFacadeImpl implements ProductFacade {
 
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
+		populator.setProductBadgeService(productBadgeService);
 		populator.populate(product, readableProduct, store, language);
 
 		return readableProduct;
@@ -135,7 +140,7 @@ public class ProductFacadeImpl implements ProductFacade {
 		ReadableProductPopulator populator = new ReadableProductPopulator();
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
-
+		populator.setProductBadgeService(productBadgeService);
 		ReadableProductList productList = new ReadableProductList();
 		for (Product product : products) {
 
@@ -170,7 +175,7 @@ public class ProductFacadeImpl implements ProductFacade {
 
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
-		try {
+		populator.setProductBadgeService(productBadgeService);		try {
 			populator.populate(product, readableProduct, product.getMerchantStore(), language);
 		} catch (ConversionException e) {
 			throw new ConversionRuntimeException("Product with code [" + uniqueCode + "] cannot be converted", e);
@@ -185,7 +190,7 @@ public class ProductFacadeImpl implements ProductFacade {
 		ReadableProductPopulator populator = new ReadableProductPopulator();
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
-
+		populator.setProductBadgeService(productBadgeService);
 		List<ProductRelationship> relatedItems = productRelationshipService.getByType(store, product,
 				ProductRelationshipType.RELATED_ITEM);
 		if (relatedItems != null && relatedItems.size() > 0) {
@@ -218,7 +223,7 @@ public class ProductFacadeImpl implements ProductFacade {
 
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
-		populator.populate(product, readableProduct, store, language);
+		populator.setProductBadgeService(productBadgeService);		populator.populate(product, readableProduct, store, language);
 
 		return readableProduct;
 	}

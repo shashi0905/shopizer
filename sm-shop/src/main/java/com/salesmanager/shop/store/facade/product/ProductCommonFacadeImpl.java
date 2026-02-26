@@ -17,6 +17,7 @@ import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.services.catalog.pricing.PricingService;
 import com.salesmanager.core.business.services.catalog.product.ProductService;
+import com.salesmanager.core.business.services.catalog.product.badge.ProductBadgeService;
 import com.salesmanager.core.business.services.catalog.product.review.ProductReviewService;
 import com.salesmanager.core.business.services.customer.CustomerService;
 import com.salesmanager.core.business.services.reference.language.LanguageService;
@@ -73,6 +74,9 @@ public class ProductCommonFacadeImpl implements ProductCommonFacade {
 
 	@Inject
 	private ProductReviewService productReviewService;
+	
+	@Inject
+	private ProductBadgeService productBadgeService;
 	
 	@Autowired
 	private PersistableProductMapper persistableProductMapper;
@@ -139,7 +143,7 @@ public class ProductCommonFacadeImpl implements ProductCommonFacade {
 		ReadableProductPopulator populator = new ReadableProductPopulator();
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
-		try {
+		populator.setProductBadgeService(productBadgeService);		try {
 			readableProduct = populator.populate(product, readableProduct, store, language);
 		} catch (ConversionException e) {
 			throw new ConversionRuntimeException("Error converting product [" + id + "]",e);
@@ -185,7 +189,7 @@ public class ProductCommonFacadeImpl implements ProductCommonFacade {
 
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
-		populator.populate(persistable, readableProduct, persistable.getMerchantStore(), language);
+		populator.setProductBadgeService(productBadgeService);		populator.populate(persistable, readableProduct, persistable.getMerchantStore(), language);
 
 		return readableProduct;
 	}
@@ -212,7 +216,7 @@ public class ProductCommonFacadeImpl implements ProductCommonFacade {
 
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
-		populator.populate(persistable, readableProduct, persistable.getMerchantStore(), language);
+		populator.setProductBadgeService(productBadgeService);		populator.populate(persistable, readableProduct, persistable.getMerchantStore(), language);
 
 		return readableProduct;
 	}
@@ -250,7 +254,7 @@ public class ProductCommonFacadeImpl implements ProductCommonFacade {
 	
 			populator.setPricingService(pricingService);
 			populator.setimageUtils(imageUtils);
-			populator.populate(product, readableProduct, product.getMerchantStore(), language);
+		populator.setProductBadgeService(productBadgeService);			populator.populate(product, readableProduct, product.getMerchantStore(), language);
 		
 		} catch(Exception e) {
 			throw new RuntimeException("Exception when adding product [" + product.getId() + "] to category [" + category.getId() + "]",e);
@@ -276,7 +280,7 @@ public class ProductCommonFacadeImpl implements ProductCommonFacade {
 
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
-		populator.populate(product, readableProduct, product.getMerchantStore(), language);
+		populator.setProductBadgeService(productBadgeService);		populator.populate(product, readableProduct, product.getMerchantStore(), language);
 
 		return readableProduct;
 	}
@@ -293,7 +297,7 @@ public class ProductCommonFacadeImpl implements ProductCommonFacade {
 
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
-		populator.populate(product, readableProduct, product.getMerchantStore(), language);
+		populator.setProductBadgeService(productBadgeService);		populator.populate(product, readableProduct, product.getMerchantStore(), language);
 
 		return readableProduct;
 	}

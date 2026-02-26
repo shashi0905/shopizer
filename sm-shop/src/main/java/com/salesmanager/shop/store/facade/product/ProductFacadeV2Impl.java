@@ -21,6 +21,7 @@ import com.salesmanager.core.business.services.catalog.pricing.PricingService;
 import com.salesmanager.core.business.services.catalog.product.ProductService;
 import com.salesmanager.core.business.services.catalog.product.attribute.ProductAttributeService;
 import com.salesmanager.core.business.services.catalog.product.availability.ProductAvailabilityService;
+import com.salesmanager.core.business.services.catalog.product.badge.ProductBadgeService;
 import com.salesmanager.core.business.services.catalog.product.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.services.catalog.product.variant.ProductVariantService;
 import com.salesmanager.core.model.catalog.product.Product;
@@ -44,7 +45,7 @@ import com.salesmanager.shop.utils.LocaleUtils;
 
 
 @Service("productFacadeV2")
-@Profile({ "default", "cloud", "gcp", "aws", "mysql" , "local" })
+@Profile({ "default", "cloud", "gcp", "aws", "mysql", "local", "h2" })
 public class ProductFacadeV2Impl implements ProductFacade {
 	
 
@@ -56,6 +57,9 @@ public class ProductFacadeV2Impl implements ProductFacade {
 	
 	@Inject
 	private ProductRelationshipService productRelationshipService;
+
+	@Inject
+	private ProductBadgeService productBadgeService;
 	
 	@Autowired
 	private ReadableProductMapper readableProductMapper;
@@ -213,7 +217,7 @@ public class ProductFacadeV2Impl implements ProductFacade {
 		ReadableProductPopulator populator = new ReadableProductPopulator();
 		populator.setPricingService(pricingService);
 		populator.setimageUtils(imageUtils);
-
+		populator.setProductBadgeService(productBadgeService);
 		List<ProductRelationship> relatedItems = productRelationshipService.getByType(store, product,
 				ProductRelationshipType.RELATED_ITEM);
 		if (relatedItems != null && relatedItems.size() > 0) {

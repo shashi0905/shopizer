@@ -50,6 +50,11 @@ import com.salesmanager.shop.model.catalog.product.type.ProductTypeDescription;
 import com.salesmanager.shop.model.catalog.product.type.ReadableProductType;
 import com.salesmanager.shop.utils.DateUtil;
 import com.salesmanager.shop.utils.ImageFilePath;
+import com.salesmanager.core.business.services.catalog.product.badge.ProductBadgeService;
+import com.salesmanager.core.model.catalog.product.ProductBadge;
+import com.salesmanager.shop.model.catalog.product.ProductBadgeData;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 
 
@@ -59,6 +64,8 @@ public class ReadableProductPopulator extends
 	private PricingService pricingService;
 
 	private ImageFilePath imageUtils;
+	
+	private ProductBadgeService productBadgeService;
 
 	public ImageFilePath getimageUtils() {
 		return imageUtils;
@@ -74,6 +81,14 @@ public class ReadableProductPopulator extends
 
 	public void setPricingService(PricingService pricingService) {
 		this.pricingService = pricingService;
+	}
+	
+	public ProductBadgeService getProductBadgeService() {
+		return productBadgeService;
+	}
+	
+	public void setProductBadgeService(ProductBadgeService productBadgeService) {
+		this.productBadgeService = productBadgeService;
 	}
 
 	@Override
@@ -558,6 +573,32 @@ public class ReadableProductPopulator extends
 		          ((ReadableProductFull)target).setDescriptions(fulldescriptions);
 		      }
 
+			// Calculate and populate badges
+			if(productBadgeService != null) {
+				List<ProductBadge> badges = productBadgeService.calculateBadges(source, store);
+				List<ProductBadgeData> badgeDataList = new ArrayList<>();
+				
+				for(ProductBadge badge : badges) {
+					ProductBadgeData badgeData = new ProductBadgeData(
+						badge.getCode(),
+						badge.getLabel(),
+						badge.getColor()
+					);
+					
+					// Add value for SALE badge (discount percentage)
+					if(badge == ProductBadge.SALE) {
+						Integer discountPercent = calculateDiscountPercentage(
+							target.getOriginalPrice(), 
+							target.getFinalPrice()
+						);
+						badgeData.setValue(discountPercent);
+					}
+					
+					badgeDataList.add(badgeData);
+				}
+				
+				target.setBadges(badgeDataList);
+			}
 
 			return target;
 
@@ -724,6 +765,28 @@ public class ReadableProductPopulator extends
         tragetDescription.setLanguage(description.getLanguage().getCode());
       }
       return tragetDescription;
+    }
+    
+    private Integer calculateDiscountPercentage(String originalPrice, String finalPrice) {
+        try {
+            if(originalPrice == null || finalPrice == null) {
+                return 0;
+            }
+            BigDecimal original = new BigDecimal(originalPrice);
+            BigDecimal finalPr = new BigDecimal(finalPrice);
+            
+            if(original.compareTo(BigDecimal.ZERO) <= 0) {
+                return 0;
+            }
+            
+            BigDecimal discount = original.subtract(finalPr)
+                .divide(original, 4, RoundingMode.HALF_UP)
+                .multiply(new BigDecimal(100));
+            
+            return discount.intValue();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
 }

@@ -35,6 +35,9 @@ public class ReadableProduct extends ProductEntity implements Serializable {
 	private List<ReadableCategory> categories = new ArrayList<ReadableCategory>();
 	private ReadableProductType type;
 	private boolean canBePurchased = false;
+	
+	// Product badges
+	private List<ProductBadgeData> badges = new ArrayList<ProductBadgeData>();
 
 	// RENTAL
 	private RentalOwner owner;
@@ -167,6 +170,19 @@ public class ReadableProduct extends ProductEntity implements Serializable {
 		this.variants = variants;
 	}
 
+	public List<ProductBadgeData> getBadges() {
+		return badges;
+	}
 
+	public void setBadges(List<ProductBadgeData> badges) {
+		this.badges = badges;
+	}
+
+	public void addBadge(ProductBadgeData badge) {
+		if(this.badges == null) {
+			this.badges = new ArrayList<ProductBadgeData>();
+		}
+		this.badges.add(badge);
+	}
 
 }
